@@ -1,14 +1,13 @@
-'''
- Use uma fila para simular atendimento de clientes.
- Use uma pilha para controlar uma sequência de tarefas.
- Apresente estatísticas ao final (número de atendimentos concluídos e de tarefas pendentes).
- Coleta de tempo de execução com o módulo time.
- Implementação de fila circular ou fila de prioridade.
- Uso de listas aninhadas ou dicionários para armazenar dados adicionais.
-'''
 from collections import deque
 import time
-
+'''
+Váriaveis criada para armazenar:
+    fila = deque()  (listas com informações dos cliente)
+    cliente = {}  (informações dos clientes)
+    orderTimeList = {}  (tempos de produção)
+    orderList = []  (armazenar estatisticas finais)
+    orderID = 0 (dar um identificador ao pedido)
+'''
 fila = deque()
 cliente = {}
 orderTimeList = {}
@@ -74,7 +73,12 @@ def startService():
     
 
 def endOrder(orderName, totalTime):
-
+    '''
+    Função criada para retirar cliente da fila, onde captura e armazena, em um dicionário, as seguintes informações:
+        ID do pedido
+        Pedido ja concluidos
+        Tempo de produção de cada pedido
+    '''
     finishOrder = fila.popleft()
     orderNum = 'Pedido ' + str(orderID)
     
@@ -88,9 +92,12 @@ def endOrder(orderName, totalTime):
     print(f'Seu pedido ficou pronto em apenas {totalTime:.2f} segundos!\n')
 
 def showDoneOrder(n):
+    '''
+    Função criada para exibir as estatisticas finais do dia
+    '''
     print('---------- ESTÁTISTICAS DO DIA ----------\n')
     for orderTimeList in orderList:
-        print(f'          {orderList[n]['ID']}          \n     {orderList[n]['Pedido'].capitalize()}\n     {orderList[n]['Tempo']:.2f}\n----------')
+        print(f'          {orderList[n]['ID']}          \n     Pedido: {orderList[n]['Pedido'].capitalize()}\n     Tempo: {orderList[n]['Tempo']:.2f} segundos\n----------')
         n += 1
     
 while True:
@@ -107,7 +114,7 @@ while True:
         if len(fila) == 0: 
             # Quando não tiver mais pessoas na fila, o usuário tem as opções de finalizar o programa ou reiniciar para adicionar mais pessoas a fila.   
             buttonFinal = int(input('\nTodos pedidos foram concluidos.\n [1]Fechar loja e ver estatísticas do dia\n [2]Adicionar mais pessoas na fila\n  '))    
-        if buttonFinal == 1:
+        if buttonFinal == 1 or 2:
             break
     if buttonFinal == 1:
         break        
