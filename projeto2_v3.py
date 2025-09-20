@@ -9,14 +9,15 @@ Váriaveis criada para armazenar:
     orderID = 0 (dar um identificador ao pedido)
 '''
 fila = deque()
+fila_prioridade = deque()
 cliente = {}
 orderTimeList = {}
-orderList = []
-orderID = 0
-buttonFinal = 0
+order_list = []
+order_ID = 0
+button_final = 0
 n = 0
 
-def entrarFila():
+def entrar_fila():
     '''
     Função criada para adicionar cliente na fila, onde captura e armazena, em um dicionário, as seguintes informações:
         Nome
@@ -36,7 +37,7 @@ def entrarFila():
                 'Pedido': order,
                 'Prioridade': prio
             }
-            fila.appendleft(cliente)
+            fila_prioridade.append(cliente)
             break
         elif prio == 2:
             cliente = {
@@ -49,74 +50,78 @@ def entrarFila():
         else:
             print('\n---------- Selecione uma opção válida para prosseguir para o atentimento ----------')
               
-def startService():
+def start_service():
     '''
     Função criada para realizar os pedidos, calcular o tempo que demorou para serem concluidos e retirar os pedidos ja concluidos da lista. 
     '''
-    orderSize = len(fila[0]['Pedido'])
-    global orderID 
-    orderID += 1
+    order_size = len(fila[0]['Pedido'])
+    global order_ID 
+    order_ID += 1
 
-    clienteName = fila[0]['Cliente']
-    orderName = fila[0]['Pedido']
-    print(f'\n---------- Pedido {orderID} ----------\nAguarde um instante, {clienteName.capitalize()}.\nLogo seu pedido estará pronto!\n')
+    cliente_name = fila[0]['Cliente']
+    order_name = fila[0]['Pedido']
+    print(f'\n---------- Pedido {order_ID} ----------\nAguarde um instante, {cliente_name.capitalize()}.\nLogo seu pedido estará pronto!\n')
     '''
     Como é apenas uma simulação de como funcionaria um aplicativo de pedidos, usei o numero de strings armazenada na na função "orderSize" para usar a função time.sleep()
     e ter um tempo diferente para cada pedido
     '''
-    startTime = time.perf_counter()
-    time.sleep(orderSize)
+    start_time = time.perf_counter()
+    time.sleep(order_size)
     endTime = time.perf_counter()
-    totalTime = float(endTime) - float(startTime)
+    totalTime = float(endTime) - float(start_time)
 
-    endOrder(orderName, totalTime) # Função utilizada para retirar o primeiro cliente da fila.
+    end_order(order_name, totalTime) # Função utilizada para retirar o primeiro cliente da fila.
     
 
-def endOrder(orderName, totalTime):
+def end_order(orderName, totalTime):
     '''
     Função criada para retirar cliente da fila, onde captura e armazena, em um dicionário, as seguintes informações:
         ID do pedido
         Pedido ja concluidos
         Tempo de produção de cada pedido
     '''
-    finishOrder = fila.popleft()
-    orderNum = 'Pedido ' + str(orderID)
+    finish_order = fila.popleft()
+    order_num = 'Pedido ' + str(order_ID)
     
-    orderTimeList = {
-        'ID': orderNum,
+    order_time_list = {
+        'ID': order_num,
         'Pedido': orderName,
         'Tempo': totalTime
     }
 
-    orderList.append(orderTimeList)
+    order_list.append(order_time_list)
     print(f'Seu pedido ficou pronto em apenas {totalTime:.2f} segundos!\n')
 
-def showDoneOrder(n):
+def show_done_order(n):
     '''
     Função criada para exibir as estatisticas finais do dia
     '''
     print('---------- ESTÁTISTICAS DO DIA ----------\n')
-    for orderTimeList in orderList:
-        print(f'          {orderList[n]['ID']}          \n     Pedido: {orderList[n]['Pedido'].capitalize()}\n     Tempo: {orderList[n]['Tempo']:.2f} segundos\n----------')
+    for order_time_list in order_list:
+        print(f'          {order_list[n]['ID']}          \n     Pedido: {order_list[n]['Pedido'].capitalize()}\n     Tempo: {order_list[n]['Tempo']:.2f} segundos\n----------')
         n += 1
     
 while True:
     # Laço criado para adicionar pessoas na fila.
-    entrarFila()
+    print(fila)
+    print(fila_prioridade)
+    entrar_fila()
     start = int(input('\nPosso começar a preparar os pedidos?\n [1]Sim\n [2]Não\n  '))
-
+    if start == 1:
+        fila = fila_prioridade + fila
     while start == 1 :
         
         while len(fila) > 0:
             # Laço criado para funcionar enquanto houver clientes na fila.
-            startService()            
+            start_service()            
         
         if len(fila) == 0: 
             # Quando não tiver mais pessoas na fila, o usuário tem as opções de finalizar o programa ou reiniciar para adicionar mais pessoas a fila.   
-            buttonFinal = int(input('\nTodos pedidos foram concluidos.\n [1]Fechar loja e ver estatísticas do dia\n [2]Adicionar mais pessoas na fila\n  '))    
-        if buttonFinal == 1 or 2:
+            fila_prioridade.clear()
+            button_final = int(input('\nTodos pedidos foram concluidos.\n [1]Fechar loja e ver estatísticas do dia\n [2]Adicionar mais pessoas na fila\n  '))    
+        if button_final == 1 or 2:
             break
-    if buttonFinal == 1:
+    if button_final == 1:
         break        
 
-showDoneOrder(n)
+show_done_order(n)
